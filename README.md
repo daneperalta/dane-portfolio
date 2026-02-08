@@ -52,17 +52,30 @@ A high-performance, visually stunning portfolio built with **Next.js 16**, **Thr
 
 ## ☁️ Cloudflare Deployment
 
-This project uses `@opennextjs/cloudflare` for seamless deployment to Cloudflare Workers/Pages.
+This project uses `@opennextjs/cloudflare` for deployment to Cloudflare Workers.
+
+### Local commands
 
 ```bash
 # Preview locally (Workers runtime)
 pnpm preview
 
-# Deploy to Cloudflare
+# Deploy manually (from your machine)
 pnpm deploy
 ```
 
-For CI/CD, connect your GitHub or GitLab repository in the Cloudflare dashboard for automatic builds and deployments.
+### Connect Git for auto-deploy
+
+To have Cloudflare build and deploy on every push to `main`:
+
+1. Go to [Workers & Pages](https://dash.cloudflare.com/?to=/:account/workers-and-pages) → **Create** → **Import a repository**
+2. Connect GitHub and select `daneperalta/dane-portfolio`
+3. Create Worker named **`dane-portfolio`** (must match `wrangler.jsonc`)
+4. Set **Build command:** `pnpm install && pnpm exec opennextjs-cloudflare build`
+5. Set **Deploy command:** `pnpm exec opennextjs-cloudflare deploy`
+6. Save and deploy
+
+Full step-by-step guide: [docs/CLOUDFLARE_SETUP.md](docs/CLOUDFLARE_SETUP.md)
 
 ## 📦 Project Structure
 
