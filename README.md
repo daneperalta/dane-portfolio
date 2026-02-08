@@ -64,20 +64,13 @@ pnpm preview
 pnpm deploy
 ```
 
-### Connect Git for auto-deploy
+### Deploy pipeline
 
-To have Cloudflare build and deploy on every push to `main`:
+**GitHub Actions (recommended):** Push to `main` triggers lint → build → deploy. Add `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` to [GitHub Secrets](https://github.com/daneperalta/dane-portfolio/settings/secrets/actions).
 
-1. Go to [Workers & Pages](https://dash.cloudflare.com/?to=/:account/workers-and-pages) → **Create** → **Import a repository**
-2. Connect GitHub and select `daneperalta/dane-portfolio`
-3. Create Worker named **`dane-portfolio`** (must match `wrangler.jsonc`)
-4. Set **Build command:** `pnpm install && pnpm exec opennextjs-cloudflare build`
-5. Set **Deploy command:** `pnpm exec opennextjs-cloudflare deploy`
-6. Save and deploy
+**Cloudflare Git integration:** Alternatively, connect the repo in the [Cloudflare dashboard](https://dash.cloudflare.com/?to=/:account/workers-and-pages) and configure build settings.
 
-> Don't use `pnpm run build` or `npx wrangler deploy` — use the OpenNext commands above.
-
-Full step-by-step guide: [docs/CLOUDFLARE_SETUP.md](docs/CLOUDFLARE_SETUP.md)
+Full setup guide: [docs/CLOUDFLARE_SETUP.md](docs/CLOUDFLARE_SETUP.md)
 
 ## 📦 Project Structure
 

@@ -1,20 +1,21 @@
-name: CI
+name: CI/CD
 
 on:
   push:
     branches: [main, master]
   pull_request:
     branches: [main, master]
+  workflow_dispatch:
 
 concurrency:
-  group: ci-${{ github.ref }}
+  group: cicd-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  build:
+  lint-build:
     name: Lint & Build
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
 
     steps:
       - uses: actions/checkout@v4
@@ -28,4 +29,38 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
       - run: pnpm run lint
-      - run: pnpm run build
+      - run: pnpm exec opennextjs-cloudflare build
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: opennext-build
+          path: .open-next/
+          retention-days: 1
+
+  deploy:
+    name: Deploy to Cloudflare
+    needs: lint-build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+
+      - run: pnpm install --frozen-lockfile
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: opennext-build
+          path: .open-next/
+
+      - run: pnpm exec opennextjs-cloudflare deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
