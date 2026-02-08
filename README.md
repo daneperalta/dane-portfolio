@@ -75,6 +75,8 @@ To have Cloudflare build and deploy on every push to `main`:
 5. Set **Deploy command:** `pnpm exec opennextjs-cloudflare deploy`
 6. Save and deploy
 
+> Don't use `pnpm run build` or `npx wrangler deploy` — use the OpenNext commands above.
+
 Full step-by-step guide: [docs/CLOUDFLARE_SETUP.md](docs/CLOUDFLARE_SETUP.md)
 
 ## 📦 Project Structure
